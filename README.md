@@ -1,4 +1,7 @@
-# Getting Started
+# Testing CSEntry ReactNative Bridge
+There are two ways to test the implementation, you can clone this code and run as it is or if you want to test it in your project then please follow the steps mentioned below.
+
+IMPORTANT: You need to name the directory that you will create as `Simple CAPI` and then push files in order to be shown in CSEntry app
 
 ## Step 1: Install App
 
@@ -42,7 +45,7 @@ After that create a folder named `xml` in res folder. Then create a new file in 
 
 ## Step 4: Add files.
 
-Extract the directory csentry from android/app/src/main/java/com/csentrydemo. And insert it in this path `android/app/src/main/java/com/{projectName}`
+Extract the directory `csentry` from `android/app/src/main/java/com/csentrydemo`. And insert it in this path `android/app/src/main/java/com/{projectName}`
 
 ## Step 5: Replace default `getPackages()` function with following code in `MainAppliction.java`.
 
