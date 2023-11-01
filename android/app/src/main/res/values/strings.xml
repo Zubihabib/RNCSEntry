@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CSentryDemo</string>
+    <string name="SERVER_ACTIVITY_NAME">gov.census.cspro.fileshare.FileShareActivity</string>
+</resources>
