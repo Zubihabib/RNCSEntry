@@ -58,24 +58,13 @@ protected List<ReactPackage> getPackages() {
 }
 ```
 
-## Step 6: Replace default `getPackages()` function with following code in `MainAppliction.java`.
-
-```bash
-@Override
-protected List<ReactPackage> getPackages() {
-   List<ReactPackage> packages = new PackageList(this).getPackages();
-   packages.add(new FileAccessPackage());
-   return packages;
-}
-```
-
-## Step 7: Add following line in `onCreate()` in `MainActivity.java` function to initialize package. If `onCreate()` function does not exist, create it.
+## Step 6: Add following line in `onCreate()` in `MainActivity.java` function to initialize package. If `onCreate()` function does not exist, create it.
 
 ```bash
 FileAccessHelper.Companion.getInstance().initialize(this);
 ```
 
-## Step 8: Import Packages.
+## Step 7: Import Packages.
 
 Add following lines at the top of your react native code.
 
@@ -84,7 +73,7 @@ import {NativeModules} from 'react-native';
 const {FileAccessModule} = NativeModules;
 ```
 
-## Step 9: Perform file operations.
+## Step 8: Perform file operations.
 
 Make sure that user has granted the Read/Write storage permission.
 On the occurence of any event perform following operations:
