@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Button, NativeModules, ToastAndroid, View} from 'react-native';
 import {PERMISSIONS, requestMultiple, RESULTS} from 'react-native-permissions';
-import {SafeAreaView, ScrollView, StyleSheet} from 'react-native';
+import {SafeAreaView, ScrollView} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import RNBlob from 'rn-fetch-blob';
 import ModalInput from './components/ModalInput';
 import Strings from './constants/Strings';
+import DeviceInfo from 'react-native-device-info';
 
 const {FileAccessModule} = NativeModules;
 
@@ -87,20 +88,22 @@ function App(): JSX.Element {
   };
 
   const requestPermission = () => {
-    requestMultiple([
-      PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-      PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-    ]).then(statuses => {
-      if (
-        statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] !=
-          RESULTS.GRANTED ||
-        statuses[PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE] != RESULTS.GRANTED
-      ) {
-        setPermissionDenied(true);
-      } else {
-        setPermissionDenied(false);
-      }
-    });
+    if(DeviceInfo.getSystemVersion() != '13') {
+      requestMultiple([
+        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+      ]).then(statuses => {
+        if (
+          statuses[PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE] !=
+            RESULTS.GRANTED ||
+          statuses[PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE] != RESULTS.GRANTED
+        ) {
+          setPermissionDenied(true);
+        } else {
+          setPermissionDenied(false);
+        }
+      });
+    }
   };
 
   return (
