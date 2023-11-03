@@ -128,3 +128,15 @@ FileAccessModule.deleteDir(
    },
 );
 ```
+
+## Step 9: Add this line in `string.xml` file
+
+```bash
+<string name="SERVER_ACTIVITY_NAME">gov.census.cspro.fileshare.FileShareActivity</string>
+```
+
+## Step 10: Add this permission in `AndroidManifest.xml` file
+
+```bash
+<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+```
