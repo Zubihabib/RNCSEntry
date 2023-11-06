@@ -24,6 +24,7 @@ function App(): JSX.Element {
       enteredName,
       () => {
         directoryName = enteredName;
+        ToastAndroid.show(Strings.msg_directory_created, ToastAndroid.LONG);
       },
       (errMsg: string) => {
         ToastAndroid.show(errMsg, ToastAndroid.LONG);
@@ -56,24 +57,29 @@ function App(): JSX.Element {
       try {
         const response = await DocumentPicker.pick({
           presentationStyle: 'fullScreen',
-          allowMultiSelection: true,
           type: [DocumentPicker.types.allFiles],
+          copyTo: "cachesDirectory"
         });
-        for (let i = 0; i < response.length; i++) {
-          let fileStat = await RNBlob.fs.stat(response[i].uri);
-          const directoryPath = getDirectoryPath(fileStat.path);
-          const fileName = fileStat.filename;
-          FileAccessModule.copySelectedFile(
-            directoryPath,
-            fileName,
-            directoryName,
-            () => {},
-            (errMsg: string) => {
-              ToastAndroid.show(errMsg, ToastAndroid.LONG);
-              return;
-            },
-          );
-        }
+          let fileUri : string | null = response[0].fileCopyUri
+          if(fileUri !== null) {
+            let fileStat = await RNBlob.fs.stat(decodeURI(fileUri));
+            const directoryPath = getDirectoryPath(fileStat.path);
+            const fileName = fileStat.filename;
+            FileAccessModule.copySelectedFile(
+              directoryPath,
+              fileName,
+              directoryName,
+              () => {
+                ToastAndroid.show(Strings.msg_file_pushed, ToastAndroid.LONG);
+              },
+              (errMsg: string) => {
+                ToastAndroid.show(errMsg, ToastAndroid.LONG);
+                return;
+              },
+            );
+          } else {
+            ToastAndroid.show(Strings.error_msg_unable_push_file, ToastAndroid.LONG);
+          }
       } catch (error) {
         console.log(error);
       }
