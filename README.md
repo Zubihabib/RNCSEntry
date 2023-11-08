@@ -1,31 +1,182 @@
-# react-native-csentry
+# Testing CSEntry ReactNative Bridge
+There are two ways to test the implementation, you can clone this code and run as it is or if you want to test it in your project then please follow the steps mentioned below.
 
-This is the React Native package to access CSEntry directory on external file storage.
+IMPORTANT: You need to name the directory that you will create as `Simple CAPI` and then push files in order to be shown in CSEntry app
 
-## Installation
+## Step 1: Install App
 
-```sh
-npm install react-native-csentry
+Install Official CSentry App in the device
+
+## Step 2: Storage Permission
+
+You will need to add storage permissions in Manifest.xml file
+
+```bash
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 ```
 
-## Usage
+## Step 3: Add Provider in Manifest.xml file in Application tag
 
-```js
-import { multiply } from 'react-native-csentry';
-
-// ...
-
-const result = await multiply(3, 7);
+```bash
+<provider
+   android:name="androidx.core.content.FileProvider"
+   android:authorities="gov.census.cspro.fileaccess.fileprovider"
+   android:exported="false"
+   android:grantUriPermissions="true">
+   <meta-data
+         android:name="android.support.FILE_PROVIDER_PATHS"
+         android:resource="@xml/provider_paths" />
+</provider>
 ```
 
-## Contributing
+After that create a folder named `xml` in res folder. Then create a new file in it named `provider_paths.xml` and insert following code in it:
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+```bash
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path path="Android/data/${applicationId}/" name="files_root" />
 
-## License
+    <root-path
+        name="root"
+        path="/" />
+</paths>
+```
 
-MIT
+## Step 4: Add files.
 
----
+Extract the directory `csentry` from `android/app/src/main/java/com/csentrydemo`. And insert it in this path `android/app/src/main/java/com/{projectName}`
 
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+## Step 5: Replace default `getPackages()` function with following code in `MainAppliction.java`.
+
+```bash
+@Override
+protected List<ReactPackage> getPackages() {
+   List<ReactPackage> packages = new PackageList(this).getPackages();
+   packages.add(new FileAccessPackage());
+   return packages;
+}
+```
+
+## Step 6: Add following line in `onCreate()` in `MainActivity.java` function to initialize package. If `onCreate()` function does not exist, create it.
+
+```bash
+FileAccessHelper.Companion.getInstance().initialize(this);
+```
+
+## Step 7: Import Packages.
+
+Add following lines at the top of your react native code.
+
+```bash
+import {NativeModules} from 'react-native';
+const {FileAccessModule} = NativeModules;
+```
+
+## Step 8: Perform file operations.
+
+Make sure that user has granted the Read/Write storage permission.
+On the occurence of any event perform following operations:
+
+### 1. Create Directory
+
+Make sure to Install Official Csentry App from Playstore.
+
+```bash
+FileAccessModule.createDirectory(
+   directoryName,
+   () => {
+      // success case
+   },
+   (errMsg: string) => {
+      // failure case
+   },
+);
+```
+
+### 2. Push files to Directory Directory
+
+Install any 3rd party plugin to pick files and get path.
+
+```bash
+FileAccessModule.copySelectedFile(
+directoryPath, // e.g storage/emulated/0
+fileName,
+directoryName,
+   () => {
+      // success case
+   },
+   (errMsg: string) => {
+      // failure case
+   },
+);
+```
+
+### 3. Delete Directory
+
+Make sure directory exists in the storage.
+
+```bash
+FileAccessModule.deleteDir(
+   '', // '' means root directory
+   directoryName,
+   () => {
+      // success case
+   },
+   (errMsg: string) => {
+      // failure case
+   },
+);
+```
+
+## Step 9: Add this line in `string.xml` file
+
+```bash
+<string name="SERVER_ACTIVITY_NAME">gov.census.cspro.fileshare.FileShareActivity</string>
+```
+
+## Step 10: Add this permission in `AndroidManifest.xml` file
+
+```bash
+<uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+```
+
+## Step 11: Add following lines of code in Project level `build.gradle` file
+
+```bash
+buildscript {
+    ext {
+        ... ...
+        ... ...
+        kotlinVersion = "1.8.0"               //Add this line
+    }
+    dependencies {
+        ... ...
+        ... ...
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0")   //Add this line
+    }
+}
+```
+
+## Step 12: Add following lines of code in App level `build.gradle` file
+
+```bash
+dependencies {
+    ... ...
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.0"         //Add this line
+
+    ... ...
+    ... ...
+}
+apply plugin: "kotlin-android"            //Add this line
+```
+
+## Additional Step: Change package name in extracted `csentry` directory.
+
+Replace "com.csentrydemo" with your app package name.
+
+# Optional: Change gradle version in `gradle-wrapper.properties` file
+
+```bash
+distributionUrl=https\://services.gradle.org/distributions/gradle-7.5-all.zip
+```
