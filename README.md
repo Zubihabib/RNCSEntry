@@ -3,10 +3,18 @@ This is the React Native package to access CSEntry directory on external file st
 
 ## Step 1: Install App
 
-Install Official CSentry App in the device
+Install Official [CSentry App](https://play.google.com/store/apps/details?id=gov.census.cspro.csentry&hl=en&gl=US) in the device
 
 
-## Step 2: Storage Permission
+## Step 2: Add `react-native-csentry` package in your React Native project
+
+```bash
+yarn add https://github.com/Zubihabib/RNCSEntry.git
+OR
+npm i https://github.com/Zubihabib/RNCSEntry.git
+```
+
+## Step 3: Storage Permission
 
 You will need to add these permissions in Manifest.xml file
 
@@ -17,7 +25,8 @@ You will need to add these permissions in Manifest.xml file
 ```
 
 
-## Step 3: Initialize FileAccessHelper in android native code
+## Step 4: Initialize FileAccessHelper in `MainActivity.java` of android native code
+
 ```bash
 import com.csentry.FileAccessHelper;
 ```
@@ -32,7 +41,14 @@ import com.csentry.FileAccessHelper;
 ```
 
 
-## Step 4: Perform file operations.
+## Step 5: Import CSentryHelper
+
+```bash
+import CSentryHelper from 'react-native-csentry';
+```
+
+
+## Step 6: Perform file operations.
 
 Make sure that user has granted the Read/Write storage permission.
 On the occurence of any event perform following operations:
